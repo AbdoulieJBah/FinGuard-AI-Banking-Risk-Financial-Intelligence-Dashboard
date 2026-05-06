@@ -232,3 +232,7 @@ Built by **Abdoulie J Bah**
 AI Engineer • Data Scientist • Financial Intelligence Developer
 """
 )
+render_global_copilot(
+    page_name="Home",
+    page_context="This page shows Premium banking risk and financial intelligence platform for credit risk, fraud detection, AML monitoring, customer intelligence, executive analytics, and AI-powered banking decision support."
+)
