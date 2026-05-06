@@ -5,6 +5,7 @@ from ui_utils import setup_page, premium_hero, metric_card, insight_card, sectio
 from data_utils import load_data
 from action_engine import generate_executive_actions, summarize_actions
 from database import init_db, save_executive_action, save_audit_log, load_executive_actions
+from stream_engine import generate_stream_batch, summarize_stream
 
 
 setup_page("Autonomous Action Engine", icon="🎯")
@@ -134,6 +135,88 @@ if not actions_df.empty:
         title="Top Branches by Action Count"
     )
     st.plotly_chart(style_plotly(fig_branch), use_container_width=True)
+
+# -----------------------------
+# LIVE RISK STREAM
+# -----------------------------
+section_title("📡 Live Risk Stream")
+
+stream_df = generate_stream_batch(
+    customers,
+    loans,
+    transactions,
+    n=12
+)
+
+stream_summary = summarize_stream(stream_df)
+
+s1, s2, s3, s4 = st.columns(4)
+
+with s1:
+    metric_card(
+        "Stream Events",
+        f"{stream_summary['events']:,}",
+        "Live monitoring queue"
+    )
+
+with s2:
+    metric_card(
+        "Critical Events",
+        f"{stream_summary['critical']:,}",
+        "Urgent escalation"
+    )
+
+with s3:
+    metric_card(
+        "High Events",
+        f"{stream_summary['high']:,}",
+        "Priority monitoring"
+    )
+
+with s4:
+    metric_card(
+        "Top Event",
+        stream_summary["top_event"],
+        "Dominant signal"
+    )
+
+if stream_df.empty:
+    insight_card(
+        "No live stream events generated.",
+        level="risk"
+    )
+
+else:
+
+    for _, row in stream_df.iterrows():
+
+        level = "good"
+
+        if row["risk_level"] == "Critical":
+            level = "critical"
+
+        elif row["risk_level"] in ["High", "Medium"]:
+            level = "risk"
+
+        insight_card(
+            f"""
+<b>{row['event_type']}</b><br>
+
+<b>Customer:</b> {row['customer_name']}<br>
+<b>Branch:</b> {row['branch']}<br>
+<b>Risk Score:</b> {row['risk_score']}/100<br>
+<b>Risk Level:</b> {row['risk_level']}<br><br>
+
+<b>Event:</b> {row['message']}<br>
+<b>Recommended Action:</b> {row['recommended_action']}
+""",
+            level=level
+        )
+
+st.dataframe(
+    stream_df,
+    use_container_width=True
+)
 
 section_title("💾 Save Actions to Database")
 
