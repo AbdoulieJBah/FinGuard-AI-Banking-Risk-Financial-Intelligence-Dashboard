@@ -60,13 +60,49 @@ with c3:
 c4, c5, c6 = st.columns(3)
 
 with c4:
-    metric_card("Customer Intelligence", "Segmentation", "Churn and product insights")
+    metric_card(
+        "Customer Intelligence",
+        "Segmentation",
+        "Churn and product insights"
+    )
 
 with c5:
-    metric_card("Compliance AML", "Monitoring", "KYC and transaction risk")
+    metric_card(
+        "Compliance AML",
+        "Monitoring",
+        "KYC and transaction risk"
+    )
 
 with c6:
-    metric_card("AI Banking Copilot", "Decision Support", "Ask questions across the platform")
+    metric_card(
+        "AI Banking Copilot",
+        "Decision Support",
+        "Ask questions across the platform"
+    )
+
+# NEW ROW
+c7, c8, c9 = st.columns(3)
+
+with c7:
+    metric_card(
+        "Executive Action Center",
+        "Risk Actions",
+        "Critical banking decisions"
+    )
+
+with c8:
+    metric_card(
+        "Fraud Watchlist",
+        "Real-Time Monitoring",
+        "Suspicious transaction queue"
+    )
+
+with c9:
+    metric_card(
+        "Executive Reporting",
+        "Board Intelligence",
+        "Exportable banking insights"
+    )
 
 
 # -----------------------------
