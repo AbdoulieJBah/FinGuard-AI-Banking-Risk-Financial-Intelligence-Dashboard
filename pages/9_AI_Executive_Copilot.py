@@ -12,6 +12,7 @@ from data_utils import (
     calculate_customer_kpis,
 )
 from ai_insights import generate_executive_insights
+from llm_copilot import generate_llm_response
 
 
 setup_page("AI Executive Copilot", icon="🧠")
@@ -199,7 +200,27 @@ if st.session_state.exec_prompt:
 
 if user_input:
     st.session_state.exec_copilot_history.append(("user", user_input))
-    response = answer_executive_question(user_input)
+    context = f"""
+Executive KPIs:
+{kpis}
+
+Credit KPIs:
+{credit_kpis}
+
+Fraud KPIs:
+{fraud_kpis}
+
+AML KPIs:
+{aml_kpis}
+
+Customer KPIs:
+{customer_kpis}
+
+User question:
+{user_input}
+"""
+
+response = generate_llm_response(context)
     st.session_state.exec_copilot_history.append(("assistant", response))
 
 for role, message in st.session_state.exec_copilot_history:
