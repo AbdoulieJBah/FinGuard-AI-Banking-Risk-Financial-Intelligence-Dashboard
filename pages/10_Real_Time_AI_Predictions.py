@@ -9,6 +9,7 @@ from ai_insights import explain_credit_prediction, explain_fraud_transaction
 from api_client import check_api_health, predict_credit_risk, predict_fraud_risk
 from database import init_db, save_prediction_log, save_audit_log
 from explainability import credit_reason_codes, fraud_reason_codes
+from global_copilot import render_global_copilot
 
 
 setup_page("Real-Time AI Predictions", icon="⚡")
@@ -452,4 +453,8 @@ insight_card(
 You can now explain frontend-backend integration, REST APIs, model persistence, API health checks, live inference, fallback logic, explainable AI, database logging, and auditability.
 """,
     level="good"
+)
+render_global_copilot(
+    page_name="Real Time AI Predictions",
+    page_context="This page shows executive banking KPIs, credit risk, fraud alerts, AML exposure, customers, deposits, and portfolio performance."
 )
