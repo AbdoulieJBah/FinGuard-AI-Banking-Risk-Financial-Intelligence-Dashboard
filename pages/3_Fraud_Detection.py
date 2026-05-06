@@ -284,26 +284,33 @@ watch_cols = [
     "fraud_risk_score",
 ]
 
+# keep only columns that exist
 watch_cols = [col for col in watch_cols if col in high_risk_df.columns]
 
 if len(high_risk_df) > 0:
+
     if "fraud_risk_score" in high_risk_df.columns:
 
-    display_df = high_risk_df[watch_cols].sort_values(
-        "fraud_risk_score",
-        ascending=False
+        display_df = high_risk_df[watch_cols].sort_values(
+            "fraud_risk_score",
+            ascending=False
+        )
+
+    else:
+
+        display_df = high_risk_df[watch_cols]
+
+    st.dataframe(
+        display_df,
+        use_container_width=True
     )
 
 else:
 
-    display_df = high_risk_df[watch_cols]
-
-st.dataframe(
-    display_df,
-    use_container_width=True
-)
-else:
-    insight_card("✅ No high-risk transactions found.", level="good")
+    insight_card(
+        "✅ No high-risk transactions found.",
+        level="good"
+    )
 
 
 # -----------------------------
