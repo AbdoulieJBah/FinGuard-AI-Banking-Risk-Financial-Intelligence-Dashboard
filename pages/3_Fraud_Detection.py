@@ -275,26 +275,33 @@ section_title("🚨 High-Risk Transaction Watchlist")
 
 watch_cols = [
     "transaction_id",
-    "customer_id",
-    "branch",
-    "segment",
+    "customer_name",
+    "transaction_amount",
     "transaction_type",
-    "amount",
-    "country",
     "channel",
+    "country",
     "hour",
     "fraud_risk_score",
-    "fraud_risk_level",
-    "is_high_value",
-    "is_cross_border",
-    "is_night_tx",
 ]
 
+watch_cols = [col for col in watch_cols if col in high_risk_df.columns]
+
 if len(high_risk_df) > 0:
-    st.dataframe(
-        high_risk_df[watch_cols].sort_values("fraud_risk_score", ascending=False),
-        use_container_width=True
+    if "fraud_risk_score" in high_risk_df.columns:
+
+    display_df = high_risk_df[watch_cols].sort_values(
+        "fraud_risk_score",
+        ascending=False
     )
+
+else:
+
+    display_df = high_risk_df[watch_cols]
+
+st.dataframe(
+    display_df,
+    use_container_width=True
+)
 else:
     insight_card("✅ No high-risk transactions found.", level="good")
 
