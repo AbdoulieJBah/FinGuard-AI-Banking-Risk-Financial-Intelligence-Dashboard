@@ -2,19 +2,54 @@ import os
 
 try:
     import google.generativeai as genai
-except Exception:
+except Exception as import_error:
     genai = None
+    GENAI_IMPORT_ERROR = str(import_error)
+else:
+    GENAI_IMPORT_ERROR = None
 
 
 def get_gemini_api_key():
+    """
+    Reads Gemini API key from Streamlit secrets first,
+    then environment variables as fallback.
+    """
+
     try:
         import streamlit as st
-        return st.secrets.get("GEMINI_API_KEY", None)
+
+        key = st.secrets.get("GEMINI_API_KEY", None)
+
+        if key:
+            return str(key).strip()
+
     except Exception:
-        return os.getenv("GEMINI_API_KEY")
+        pass
+
+    key = os.getenv("GEMINI_API_KEY")
+
+    if key:
+        return str(key).strip()
+
+    return None
 
 
-def generate_fallback_response(prompt):
+def gemini_debug_status():
+    """
+    Safe debug helper. Does not expose the actual API key.
+    """
+
+    api_key = get_gemini_api_key()
+
+    return {
+        "gemini_package_loaded": genai is not None,
+        "gemini_import_error": GENAI_IMPORT_ERROR,
+        "gemini_key_found": bool(api_key),
+        "gemini_key_length": len(api_key) if api_key else 0,
+    }
+
+
+def generate_fallback_response(prompt, reason="Gemini is not configured"):
     return f"""
 ### Executive AI Response
 
@@ -27,15 +62,25 @@ Key recommendations:
 - Monitor customer churn risk and protect high-value deposit relationships.
 - Use audit logs and action queues to track decisions and accountability.
 
-Note: Gemini API key is not configured, so this response is generated using the built-in fallback engine.
+**Copilot mode:** Built-in fallback engine  
+**Fallback reason:** {reason}
 """
 
 
 def generate_llm_response(prompt):
     api_key = get_gemini_api_key()
 
-    if genai is None or not api_key:
-        return generate_fallback_response(prompt)
+    if genai is None:
+        return generate_fallback_response(
+            prompt,
+            reason=f"google-generativeai package not loaded: {GENAI_IMPORT_ERROR}"
+        )
+
+    if not api_key:
+        return generate_fallback_response(
+            prompt,
+            reason="GEMINI_API_KEY not found in Streamlit secrets or environment variables"
+        )
 
     try:
         genai.configure(api_key=api_key)
@@ -69,7 +114,16 @@ Context and question:
 """
         )
 
-        return response.text
+        if hasattr(response, "text") and response.text:
+            return response.text
+
+        return generate_fallback_response(
+            prompt,
+            reason="Gemini returned an empty response"
+        )
 
     except Exception as e:
-        return generate_fallback_response(prompt) + f"\n\nAPI fallback reason: {str(e)}"
+        return generate_fallback_response(
+            prompt,
+            reason=f"Gemini API error: {str(e)}"
+        )
