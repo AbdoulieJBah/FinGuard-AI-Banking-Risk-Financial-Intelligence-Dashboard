@@ -4,6 +4,7 @@ import pandas as pd
 
 from ui_utils import setup_page, premium_hero, metric_card, insight_card, section_title, style_plotly
 from data_utils import load_data
+from global_copilot import render_global_copilot
 
 
 setup_page("Fraud Detection", icon="🚨")
@@ -399,4 +400,8 @@ st.download_button(
     "finguard_fraud_detection_transactions.csv",
     "text/csv",
     use_container_width=True
+)
+render_global_copilot(
+    page_name="Fraud Detection",
+    page_context="This page shows executive banking KPIs, credit risk, fraud alerts, AML exposure, customers, deposits, and portfolio performance."
 )
