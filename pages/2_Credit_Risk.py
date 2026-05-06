@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, balanced_accuracy_score
 from sklearn.ensemble import RandomForestClassifier
 
-from utils import setup_page, premium_hero, metric_card, insight_card, section_title, style_plotly
+from ui_utils import setup_page, premium_hero, metric_card, insight_card, section_title, style_plotly
 from data_utils import load_data
 
 
