@@ -14,6 +14,7 @@ from data_utils import (
 from ai_insights import generate_executive_insights
 from llm_copilot import generate_llm_response
 from llm_copilot import generate_llm_response, gemini_debug_status
+from auth import require_login
 
 
 setup_page("AI Executive Copilot", icon="🧠")
