@@ -126,6 +126,12 @@ with c12:
         "Board AI Assistant",
         "Executive reasoning and risk recommendations"
     )
+with c12:
+    metric_card(
+        "Real-Time AI Predictions",
+        "Live Inference",
+        "Credit default and fraud anomaly scoring"
+    )
 
 # -----------------------------
 # VALUE PROPOSITION
