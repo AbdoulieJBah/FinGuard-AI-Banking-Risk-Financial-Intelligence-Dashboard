@@ -220,7 +220,7 @@ User question:
 {user_input}
 """
 
-response = generate_llm_response(context)
+    response = generate_llm_response(context)
     st.session_state.exec_copilot_history.append(("assistant", response))
 
 for role, message in st.session_state.exec_copilot_history:
