@@ -103,7 +103,29 @@ with c9:
         "Board Intelligence",
         "Exportable banking insights"
     )
+# FORECASTING ROW
+c10, c11, c12 = st.columns(3)
 
+with c10:
+    metric_card(
+        "Forecasting Intelligence",
+        "Predictive Analytics",
+        "Fraud, AML, transaction and portfolio forecasts"
+    )
+
+with c11:
+    metric_card(
+        "Portfolio Pressure",
+        "Risk Forecast",
+        "Credit and churn exposure outlook"
+    )
+
+with c12:
+    metric_card(
+        "Risk Capacity Planning",
+        "Operations Forecast",
+        "Prepare teams for future alert volume"
+    )
 
 # -----------------------------
 # VALUE PROPOSITION
