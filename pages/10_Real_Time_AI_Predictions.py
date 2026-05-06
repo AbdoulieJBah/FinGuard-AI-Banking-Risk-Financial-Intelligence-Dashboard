@@ -7,17 +7,21 @@ from ui_utils import setup_page, premium_hero, metric_card, insight_card, sectio
 from credit_model import predict_default_probability
 from fraud_model import score_single_transaction
 from ai_insights import explain_credit_prediction, explain_fraud_transaction
+from api_client import check_api_health, predict_credit_risk, predict_fraud_risk
 
 
 setup_page("Real-Time AI Predictions", icon="⚡")
 
 premium_hero(
     "⚡ Real-Time AI Predictions",
-    "Live banking AI inference for credit default risk, fraud anomaly scoring, and explainable financial decision support.",
+    "Live banking AI inference connected to FastAPI backend with local ML fallback for credit default risk, fraud anomaly scoring, and explainable financial decision support.",
     badge="Production AI Inference Layer"
 )
 
 
+# -----------------------------
+# MODEL PATHS
+# -----------------------------
 MODEL_DIR = "models"
 CREDIT_MODEL_PATH = os.path.join(MODEL_DIR, "credit_risk_model.pkl")
 FRAUD_MODEL_PATH = os.path.join(MODEL_DIR, "fraud_anomaly_model.pkl")
@@ -28,8 +32,7 @@ def load_credit_model():
     if not os.path.exists(CREDIT_MODEL_PATH):
         return None
 
-    artifact = joblib.load(CREDIT_MODEL_PATH)
-    return artifact
+    return joblib.load(CREDIT_MODEL_PATH)
 
 
 @st.cache_resource
@@ -37,8 +40,7 @@ def load_fraud_model():
     if not os.path.exists(FRAUD_MODEL_PATH):
         return None
 
-    artifact = joblib.load(FRAUD_MODEL_PATH)
-    return artifact
+    return joblib.load(FRAUD_MODEL_PATH)
 
 
 credit_artifact = load_credit_model()
@@ -52,9 +54,52 @@ fraud_metrics = fraud_artifact["metrics"] if fraud_artifact else {}
 
 
 # -----------------------------
-# MODEL STATUS
+# BACKEND STATUS
 # -----------------------------
-section_title("🧠 Model Status")
+section_title("🌐 FastAPI Backend Status")
+
+api_status = check_api_health()
+backend_available = api_status.get("status") == "healthy"
+
+b1, b2, b3 = st.columns(3)
+
+with b1:
+    metric_card(
+        "Backend API",
+        "Online" if backend_available else "Offline",
+        "FastAPI service"
+    )
+
+with b2:
+    metric_card(
+        "Credit API Model",
+        "Loaded" if api_status.get("credit_model_loaded") else "Missing",
+        "Backend credit model"
+    )
+
+with b3:
+    metric_card(
+        "Fraud API Model",
+        "Loaded" if api_status.get("fraud_model_loaded") else "Missing",
+        "Backend fraud model"
+    )
+
+if backend_available:
+    insight_card(
+        "✅ FastAPI backend is connected. Predictions will use the production API.",
+        level="good"
+    )
+else:
+    insight_card(
+        "⚠️ FastAPI backend is offline. Predictions will use local model fallback.",
+        level="risk"
+    )
+
+
+# -----------------------------
+# LOCAL MODEL STATUS
+# -----------------------------
+section_title("🧠 Local Model Status")
 
 m1, m2, m3, m4 = st.columns(4)
 
@@ -62,7 +107,7 @@ with m1:
     metric_card(
         "Credit Model",
         credit_metrics.get("model_type", "Missing"),
-        "Default prediction"
+        "Local fallback"
     )
 
 with m2:
@@ -76,7 +121,7 @@ with m3:
     metric_card(
         "Fraud Model",
         fraud_metrics.get("model_type", "Missing"),
-        "Anomaly detection"
+        "Local fallback"
     )
 
 with m4:
@@ -88,13 +133,13 @@ with m4:
 
 if credit_model is None:
     insight_card(
-        "⚠️ Credit model not found. Run `python train_models.py` locally and commit the generated model files.",
+        "⚠️ Local credit model not found. Run `python train_models.py` and commit the generated model files.",
         level="risk"
     )
 
 if fraud_model is None:
     insight_card(
-        "⚠️ Fraud model not found. Run `python train_models.py` locally and commit the generated model files.",
+        "⚠️ Local fraud model not found. Run `python train_models.py` and commit the generated model files.",
         level="risk"
     )
 
@@ -140,7 +185,7 @@ with st.form("credit_prediction_form"):
 
 if run_credit:
 
-    credit_row = {
+    credit_payload = {
         "age": age,
         "annual_income": annual_income,
         "account_balance": account_balance,
@@ -155,22 +200,44 @@ if run_credit:
         "employment_status": employment_status,
     }
 
-    probability = predict_default_probability(credit_model, credit_row)
+    prediction_source = "Local ML Fallback"
+
+    if backend_available:
+        api_result = predict_credit_risk(credit_payload)
+
+        if "error" not in api_result:
+            probability = api_result.get("default_probability", 0)
+            label = api_result.get("risk_level", "Low") + " Risk"
+            explanation = api_result.get(
+                "explanation",
+                explain_credit_prediction(credit_payload, probability)
+            )
+            decision = api_result.get("decision", "No decision returned")
+            prediction_source = "FastAPI Backend"
+
+        else:
+            probability = predict_default_probability(credit_model, credit_payload)
+            label = "High Risk" if probability >= 70 else "Medium Risk" if probability >= 40 else "Low Risk"
+            explanation = explain_credit_prediction(credit_payload, probability)
+            decision = "Fallback decision generated locally"
+
+    else:
+        probability = predict_default_probability(credit_model, credit_payload)
+        label = "High Risk" if probability >= 70 else "Medium Risk" if probability >= 40 else "Low Risk"
+        explanation = explain_credit_prediction(credit_payload, probability)
+        decision = "Fallback decision generated locally"
 
     if probability >= 70:
         level = "critical"
-        label = "High Risk"
     elif probability >= 40:
         level = "risk"
-        label = "Medium Risk"
     else:
         level = "good"
-        label = "Low Risk"
 
-    r1, r2, r3 = st.columns(3)
+    r1, r2, r3, r4 = st.columns(4)
 
     with r1:
-        metric_card("Default Probability", f"{probability:.2f}%", "ML prediction")
+        metric_card("Default Probability", f"{probability:.2f}%", "Prediction output")
 
     with r2:
         metric_card("Risk Level", label, "Credit decision")
@@ -178,8 +245,15 @@ if run_credit:
     with r3:
         metric_card("Debt-to-Income", f"{debt_to_income:.2f}", "Affordability pressure")
 
+    with r4:
+        metric_card("Source", prediction_source, "Inference engine")
+
     insight_card(
-        explain_credit_prediction(credit_row, probability),
+        f"""
+<b>Prediction Explanation:</b><br>
+{explanation}<br><br>
+<b>Decision:</b> {decision}
+""",
         level=level
     )
 
@@ -233,7 +307,7 @@ with st.form("fraud_prediction_form"):
 
 if run_fraud:
 
-    fraud_row = {
+    fraud_payload = {
         "amount": amount,
         "transaction_amount": amount,
         "hour": hour,
@@ -245,10 +319,37 @@ if run_fraud:
         "channel": channel,
     }
 
-    result = score_single_transaction(fraud_model, fraud_row)
+    fraud_source = "Local ML Fallback"
 
-    anomaly_score = result["anomaly_score"]
-    anomaly_level = result["anomaly_level"]
+    if backend_available:
+        api_result = predict_fraud_risk(fraud_payload)
+
+        if "error" not in api_result:
+            anomaly_score = api_result.get("anomaly_score", 0)
+            anomaly_level = api_result.get("anomaly_level", "Low")
+            anomaly_flag = api_result.get("anomaly_flag", 0)
+            explanation = api_result.get(
+                "explanation",
+                explain_fraud_transaction(fraud_payload)
+            )
+            decision = api_result.get("decision", "No decision returned")
+            fraud_source = "FastAPI Backend"
+
+        else:
+            result = score_single_transaction(fraud_model, fraud_payload)
+            anomaly_score = result["anomaly_score"]
+            anomaly_level = result["anomaly_level"]
+            anomaly_flag = result["anomaly_flag"]
+            explanation = explain_fraud_transaction(fraud_payload)
+            decision = "Fallback decision generated locally"
+
+    else:
+        result = score_single_transaction(fraud_model, fraud_payload)
+        anomaly_score = result["anomaly_score"]
+        anomaly_level = result["anomaly_level"]
+        anomaly_flag = result["anomaly_flag"]
+        explanation = explain_fraud_transaction(fraud_payload)
+        decision = "Fallback decision generated locally"
 
     if anomaly_score >= 70:
         fraud_level = "critical"
@@ -257,19 +358,26 @@ if run_fraud:
     else:
         fraud_level = "good"
 
-    s1, s2, s3 = st.columns(3)
+    s1, s2, s3, s4 = st.columns(4)
 
     with s1:
-        metric_card("Anomaly Score", f"{anomaly_score:.2f}/100", "Isolation Forest")
+        metric_card("Anomaly Score", f"{anomaly_score:.2f}/100", "Fraud signal")
 
     with s2:
-        metric_card("Anomaly Level", anomaly_level, "Fraud signal")
+        metric_card("Anomaly Level", anomaly_level, "Risk class")
 
     with s3:
-        metric_card("Anomaly Flag", "Yes" if result["anomaly_flag"] else "No", "Investigation trigger")
+        metric_card("Anomaly Flag", "Yes" if anomaly_flag else "No", "Investigation trigger")
+
+    with s4:
+        metric_card("Source", fraud_source, "Inference engine")
 
     insight_card(
-        explain_fraud_transaction(fraud_row),
+        f"""
+<b>Fraud Explanation:</b><br>
+{explanation}<br><br>
+<b>Decision:</b> {decision}
+""",
         level=fraud_level
     )
 
@@ -277,12 +385,12 @@ if run_fraud:
 # -----------------------------
 # EXECUTIVE USAGE NOTES
 # -----------------------------
-section_title("🎯 How This Strengthens the Platform")
+section_title("🎯 Why This Is Production-Level")
 
 insight_card(
     """
-<b>Production AI capability:</b><br>
-This page shows that FinGuard AI can train models, save model artifacts, reload them, and perform live inference on new banking cases.
+<b>Full-stack AI inference:</b><br>
+This page connects Streamlit frontend to a FastAPI backend while keeping a local ML fallback. This is how real enterprise AI systems avoid complete failure when a service is unavailable.
 """,
     level="good"
 )
@@ -290,7 +398,7 @@ This page shows that FinGuard AI can train models, save model artifacts, reload 
 insight_card(
     """
 <b>Interview value:</b><br>
-You can now explain the full AI lifecycle: data generation, preprocessing, model training, model persistence, deployment, inference, and explainability.
+You can now explain frontend-backend integration, REST APIs, model persistence, API health checks, live inference, fallback logic, and explainable AI.
 """,
     level="good"
 )
