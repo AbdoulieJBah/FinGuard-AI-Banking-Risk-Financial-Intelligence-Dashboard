@@ -13,6 +13,7 @@ from data_utils import (
 )
 from ai_insights import generate_executive_insights
 from llm_copilot import generate_llm_response
+from llm_copilot import generate_llm_response, gemini_debug_status
 
 
 setup_page("AI Executive Copilot", icon="🧠")
@@ -38,6 +39,8 @@ premium_hero(
     badge="Executive Banking AI Assistant"
 )
 
+with st.expander("🔍 Gemini Debug Status"):
+    st.json(gemini_debug_status())
 
 if "exec_copilot_history" not in st.session_state:
     st.session_state.exec_copilot_history = []
