@@ -9,7 +9,7 @@ from auth import require_login
 
 
 setup_page("Executive Dashboard", icon="📊")
-require_login()
+
 require_role(["Admin", "Executive"])
 
 customers, loans, transactions = load_data()
