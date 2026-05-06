@@ -1,5 +1,6 @@
 import streamlit as st
 
+from global_copilot import render_global_copilot
 from ui_utils import (
     setup_page,
     premium_hero,
