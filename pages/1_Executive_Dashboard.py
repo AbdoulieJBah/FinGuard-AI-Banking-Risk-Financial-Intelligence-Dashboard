@@ -6,13 +6,13 @@ from ui_utils import setup_page, premium_hero, metric_card, insight_card, sectio
 from data_utils import load_data, calculate_executive_kpis
 from global_copilot import render_global_copilot
 from auth import require_login
-
+require_login()
+require_role(["Admin", "Executive"])
 
 setup_page("Executive Dashboard", icon="📊")
 customers, loans, transactions = load_data()
 kpis = calculate_executive_kpis(customers, loans, transactions)
-require_login()
-require_role(["Admin", "Executive"])
+
 premium_hero(
     "📊 Executive Banking Dashboard",
     """
