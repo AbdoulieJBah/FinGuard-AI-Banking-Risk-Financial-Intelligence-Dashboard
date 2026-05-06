@@ -16,7 +16,7 @@ actions_df = generate_executive_actions(customers, loans, transactions)
 summary = summarize_actions(actions_df)
 
 premium_hero(
-    "🎯 Executive Action Center",
+    "🎯 Autonomous Action Engine",
     "Automated banking action engine for credit reviews, fraud investigations, AML escalation, and customer retention priorities.",
     badge="Autonomous Banking Action Engine"
 )
