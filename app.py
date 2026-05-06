@@ -122,9 +122,9 @@ with c11:
 
 with c12:
     metric_card(
-        "Risk Capacity Planning",
-        "Operations Forecast",
-        "Prepare teams for future alert volume"
+        "AI Executive Copilot",
+        "Board AI Assistant",
+        "Executive reasoning and risk recommendations"
     )
 
 # -----------------------------
