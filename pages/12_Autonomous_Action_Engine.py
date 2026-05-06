@@ -6,6 +6,7 @@ from data_utils import load_data
 from action_engine import generate_executive_actions, summarize_actions
 from database import init_db, save_executive_action, save_audit_log, load_executive_actions
 from stream_engine import generate_stream_batch, summarize_stream
+from global_copilot import render_global_copilot
 
 
 setup_page("Autonomous Action Engine", icon="🎯")
@@ -258,4 +259,8 @@ st.download_button(
     "finguard_executive_action_queue.csv",
     "text/csv",
     use_container_width=True
+)
+render_global_copilot(
+    page_name="Autonomous Action Engine",
+    page_context="This page shows executive banking KPIs, credit risk, fraud alerts, AML exposure, customers, deposits, and portfolio performance."
 )
