@@ -5,9 +5,12 @@ import pandas as pd
 from ui_utils import setup_page, premium_hero, metric_card, insight_card, section_title, style_plotly
 from data_utils import load_data, calculate_executive_kpis
 from global_copilot import render_global_copilot
+from auth import require_login
 
 
 setup_page("Executive Dashboard", icon="📊")
+require_login()
+require_role(["Admin", "Executive"])
 
 customers, loans, transactions = load_data()
 kpis = calculate_executive_kpis(customers, loans, transactions)
