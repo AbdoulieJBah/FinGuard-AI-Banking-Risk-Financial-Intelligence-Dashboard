@@ -157,7 +157,7 @@ def generate_sample_data(n_customers=1200, n_loans=900, n_transactions=5000):
         "country": np.random.choice(
             countries,
             n_transactions,
-            p=[0.68, 0.06, 0.05, 0.05, 0.04, 0.035, 0.025, 0.03, 0.04]
+            p=[0.66, 0.06, 0.05, 0.05, 0.04, 0.03, 0.02, 0.04, 0.05]
         ),
         "channel": np.random.choice(channels, n_transactions),
         "hour": np.random.randint(0, 24, n_transactions),
