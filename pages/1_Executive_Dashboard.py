@@ -251,41 +251,59 @@ st.dataframe(risk_summary, use_container_width=True)
 # -----------------------------
 section_title("📈 Transaction Activity Trend")
 
-daily_tx = (
-    transactions.copy()
-    .assign(date_only=lambda x: pd.to_datetime(x["date"]).dt.date)
-    .groupby("date_only")
-    .agg(
-        transactions=("transaction_id", "count"),
-        value=("amount", "sum"),
-        fraud_alerts=("fraud_flag", "sum"),
-        aml_alerts=("aml_flag", "sum"),
+date_column = None
+
+possible_date_cols = [
+    "date",
+    "transaction_date",
+    "timestamp",
+    "created_at"
+]
+
+for col in possible_date_cols:
+    if col in transactions.columns:
+        date_column = col
+        break
+
+if date_column is not None:
+
+    trend_df = (
+        transactions
+        .assign(
+            date_only=lambda x: pd.to_datetime(
+                x[date_column],
+                errors="coerce"
+            ).dt.date
+        )
+        .dropna(subset=["date_only"])
+        .groupby("date_only")
+        .agg(
+            transactions=("transaction_id", "count"),
+            volume=("amount", "sum"),
+            fraud_cases=("fraud_flag", "sum")
+        )
+        .reset_index()
     )
-    .reset_index()
-)
 
-trend1, trend2 = st.columns(2)
-
-with trend1:
-    fig_daily_value = px.line(
-        daily_tx,
+    fig_trend = px.line(
+        trend_df,
         x="date_only",
-        y="value",
-        title="Daily Transaction Value",
+        y="transactions",
+        title="Daily Transaction Volume",
         markers=True
     )
-    st.plotly_chart(style_plotly(fig_daily_value), use_container_width=True)
 
-with trend2:
-    fig_daily_alerts = px.line(
-        daily_tx,
-        x="date_only",
-        y=["fraud_alerts", "aml_alerts"],
-        title="Daily Fraud & AML Alerts",
-        markers=True
+    st.plotly_chart(
+        style_plotly(fig_trend),
+        use_container_width=True
     )
-    st.plotly_chart(style_plotly(fig_daily_alerts), use_container_width=True)
 
+else:
+
+    insight_card(
+        "⚠️ No transaction date column found.",
+        level="risk"
+    )
 
 # -----------------------------
 # DOWNLOAD
