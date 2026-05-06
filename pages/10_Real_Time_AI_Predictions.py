@@ -8,6 +8,7 @@ from fraud_model import score_single_transaction
 from ai_insights import explain_credit_prediction, explain_fraud_transaction
 from api_client import check_api_health, predict_credit_risk, predict_fraud_risk
 from database import init_db, save_prediction_log, save_audit_log
+from explainability import credit_reason_codes, fraud_reason_codes
 
 
 setup_page("Real-Time AI Predictions", icon="⚡")
@@ -256,6 +257,10 @@ if run_credit:
 """,
         level=level
     )
+    section_title("📋 Credit Reason Codes")
+
+    credit_reasons = credit_reason_codes(credit_payload)
+    st.dataframe(credit_reasons, use_container_width=True)
 
     save_prediction_log(
         prediction_type="Credit Risk",
@@ -397,6 +402,10 @@ if run_fraud:
 """,
         level=fraud_level
     )
+    section_title("📋 Fraud Reason Codes")
+
+    fraud_reasons = fraud_reason_codes(fraud_payload)
+    st.dataframe(fraud_reasons, use_container_width=True)
 
     save_prediction_log(
         prediction_type="Fraud Risk",
