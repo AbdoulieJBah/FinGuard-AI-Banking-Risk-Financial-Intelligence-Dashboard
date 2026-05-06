@@ -1,6 +1,5 @@
 import os
 import joblib
-import pandas as pd
 import streamlit as st
 
 from ui_utils import setup_page, premium_hero, metric_card, insight_card, section_title
@@ -8,9 +7,12 @@ from credit_model import predict_default_probability
 from fraud_model import score_single_transaction
 from ai_insights import explain_credit_prediction, explain_fraud_transaction
 from api_client import check_api_health, predict_credit_risk, predict_fraud_risk
+from database import init_db, save_prediction_log, save_audit_log
 
 
 setup_page("Real-Time AI Predictions", icon="⚡")
+init_db()
+
 
 premium_hero(
     "⚡ Real-Time AI Predictions",
@@ -31,7 +33,6 @@ FRAUD_MODEL_PATH = os.path.join(MODEL_DIR, "fraud_anomaly_model.pkl")
 def load_credit_model():
     if not os.path.exists(CREDIT_MODEL_PATH):
         return None
-
     return joblib.load(CREDIT_MODEL_PATH)
 
 
@@ -39,7 +40,6 @@ def load_credit_model():
 def load_fraud_model():
     if not os.path.exists(FRAUD_MODEL_PATH):
         return None
-
     return joblib.load(FRAUD_MODEL_PATH)
 
 
@@ -257,6 +257,23 @@ if run_credit:
         level=level
     )
 
+    save_prediction_log(
+        prediction_type="Credit Risk",
+        customer_id=f"CUST-{age}-{credit_score}",
+        input_summary=f"Income={annual_income}, Loan={loan_amount}, CreditScore={credit_score}",
+        risk_score=float(probability),
+        risk_level=label,
+        decision=decision,
+        source=prediction_source
+    )
+
+    save_audit_log(
+        event_type="Credit Prediction",
+        event_message=f"Credit prediction executed with probability {probability:.2f}% using {prediction_source}"
+    )
+
+    st.success("✅ Credit prediction saved to database.")
+
 
 # -----------------------------
 # FRAUD LIVE PREDICTION
@@ -381,6 +398,23 @@ if run_fraud:
         level=fraud_level
     )
 
+    save_prediction_log(
+        prediction_type="Fraud Risk",
+        customer_id=f"TX-{amount}-{hour}",
+        input_summary=f"Amount={amount}, Country={country}, Channel={channel}",
+        risk_score=float(anomaly_score),
+        risk_level=anomaly_level,
+        decision=decision,
+        source=fraud_source
+    )
+
+    save_audit_log(
+        event_type="Fraud Prediction",
+        event_message=f"Fraud prediction executed with anomaly score {anomaly_score:.2f} using {fraud_source}"
+    )
+
+    st.success("✅ Fraud prediction saved to database.")
+
 
 # -----------------------------
 # EXECUTIVE USAGE NOTES
@@ -397,8 +431,16 @@ This page connects Streamlit frontend to a FastAPI backend while keeping a local
 
 insight_card(
     """
+<b>Persistent audit trail:</b><br>
+Every credit and fraud prediction is saved into SQLite with prediction logs and audit records, making the system closer to a real banking intelligence platform.
+""",
+    level="good"
+)
+
+insight_card(
+    """
 <b>Interview value:</b><br>
-You can now explain frontend-backend integration, REST APIs, model persistence, API health checks, live inference, fallback logic, and explainable AI.
+You can now explain frontend-backend integration, REST APIs, model persistence, API health checks, live inference, fallback logic, explainable AI, database logging, and auditability.
 """,
     level="good"
 )
