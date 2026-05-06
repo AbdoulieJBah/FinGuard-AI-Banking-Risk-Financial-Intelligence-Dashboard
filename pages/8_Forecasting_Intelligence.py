@@ -4,6 +4,7 @@ import plotly.express as px
 
 from ui_utils import setup_page, premium_hero, metric_card, insight_card, section_title, style_plotly
 from data_utils import load_data
+from global_copilot import render_global_copilot
 
 
 setup_page("Forecasting Intelligence", icon="📈")
@@ -266,4 +267,8 @@ st.download_button(
     "finguard_forecasting_report.csv",
     "text/csv",
     use_container_width=True
+)
+render_global_copilot(
+    page_name="Forecasting Intelligence",
+    page_context="This page shows executive banking KPIs, credit risk, fraud alerts, AML exposure, customers, deposits, and portfolio performance."
 )
