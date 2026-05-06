@@ -202,30 +202,53 @@ st.dataframe(branch_summary, use_container_width=True)
 # -----------------------------
 # PRODUCT ENGAGEMENT
 # -----------------------------
-section_title("💼 Product Engagement Intelligence")
+section_title("📊 Product Engagement vs Churn")
 
-p1, p2 = st.columns(2)
+required_cols = [
+    "num_products",
+    "churn_risk_score",
+    "customer_segment"
+]
 
-with p1:
-    fig_products = px.histogram(
-        customers,
-        x="num_products",
-        nbins=7,
-        title="Number of Products per Customer"
+available_cols = [
+    col for col in required_cols
+    if col in customers.columns
+]
+
+if "num_products" in customers.columns and "churn_risk_score" in customers.columns:
+
+    if "customer_segment" in customers.columns:
+
+        fig_products_churn = px.scatter(
+            customers,
+            x="num_products",
+            y="churn_risk_score",
+            color="customer_segment",
+            title="Product Engagement vs Churn Risk",
+            size="churn_risk_score"
+        )
+
+    else:
+
+        fig_products_churn = px.scatter(
+            customers,
+            x="num_products",
+            y="churn_risk_score",
+            title="Product Engagement vs Churn Risk",
+            size="churn_risk_score"
+        )
+
+    st.plotly_chart(
+        style_plotly(fig_products_churn),
+        use_container_width=True
     )
-    st.plotly_chart(style_plotly(fig_products), use_container_width=True)
 
-with p2:
-    fig_products_churn = px.scatter(
-        customers,
-        x="num_products",
-        y="churn_risk",
-        color="segment",
-        size="account_balance",
-        title="Product Engagement vs Churn Risk"
+else:
+
+    insight_card(
+        "⚠️ Required columns for churn visualization are missing.",
+        level="risk"
     )
-    st.plotly_chart(style_plotly(fig_products_churn), use_container_width=True)
-
 # -----------------------------
 # HIGH VALUE CUSTOMERS
 # -----------------------------
