@@ -95,28 +95,41 @@ with c6:
 # -----------------------------
 section_title("💡 Why This Project Matters")
 
-v1, v2 = st.columns(2)
+m1, m2 = st.columns(2)
 
-with v1:
+with m1:
     insight_card(
         """
-        <b>For banking roles:</b><br>
-        Shows strong understanding of credit risk, fraud analytics,
-        compliance monitoring, financial KPIs, and AI-driven decision support.
+        <b>For Banking Roles:</b><br><br>
+
+        Shows strong understanding of:
+        <ul>
+            <li>Credit risk</li>
+            <li>Fraud detection</li>
+            <li>AML compliance</li>
+            <li>Financial KPIs</li>
+            <li>Executive intelligence dashboards</li>
+        </ul>
         """,
         level="good"
     )
 
-with v2:
+with m2:
     insight_card(
         """
-        <b>For AI/Data roles:</b><br>
-        Demonstrates data engineering, machine learning, risk scoring,
-        dashboards, analytics storytelling, and real-world business impact.
+        <b>For AI/Data Roles:</b><br><br>
+
+        Demonstrates:
+        <ul>
+            <li>Data engineering</li>
+            <li>Machine learning workflows</li>
+            <li>Analytics storytelling</li>
+            <li>Interactive dashboards</li>
+            <li>Real-world AI business applications</li>
+        </ul>
         """,
         level="good"
     )
-
 
 # -----------------------------
 # ARCHITECTURE
