@@ -7,7 +7,7 @@ from action_engine import generate_executive_actions, summarize_actions
 from database import init_db, save_executive_action, save_audit_log, load_executive_actions
 
 
-setup_page("Executive Action Center", icon="🎯")
+setup_page("Autonomous Action Engine", icon="🎯")
 init_db()
 
 customers, loans, transactions = load_data()
