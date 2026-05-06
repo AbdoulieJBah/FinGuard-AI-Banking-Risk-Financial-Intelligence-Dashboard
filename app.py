@@ -1,6 +1,7 @@
 import streamlit as st
 
 from global_copilot import render_global_copilot
+from auth import require_login, get_current_user, logout_button
 from ui_utils import (
     setup_page,
     premium_hero,
@@ -13,6 +14,10 @@ from ui_utils import (
 
 setup_page("FinGuard AI", icon="🏦")
 
+require_login()
+
+current_user = get_current_user()
+logout_button()
 
 # -----------------------------
 # HERO
@@ -23,6 +28,18 @@ premium_hero(
     badge="AI Banking Risk Intelligence Platform"
 )
 
+section_title("👤 User Workspace")
+
+u1, u2, u3 = st.columns(3)
+
+with u1:
+    metric_card("Logged In As", current_user["name"], "Authenticated user")
+
+with u2:
+    metric_card("Role", current_user["role"], "Role-based access enabled")
+
+with u3:
+    metric_card("Status", current_user["status"], "Secure session")
 
 # -----------------------------
 # PLATFORM OVERVIEW
