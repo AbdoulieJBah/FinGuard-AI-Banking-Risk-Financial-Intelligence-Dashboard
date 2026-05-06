@@ -2,7 +2,7 @@ import streamlit as st
 import plotly.express as px
 import pandas as pd
 
-from utils import setup_page, premium_hero, metric_card, insight_card, section_title, style_plotly
+from ui_utils import setup_page, premium_hero, metric_card, insight_card, section_title, style_plotly
 from data_utils import load_data
 
 
