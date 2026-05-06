@@ -1,6 +1,6 @@
 import streamlit as st
 
-from utils import setup_page, premium_hero, metric_card, insight_card, section_title
+from ui_utils import setup_page, premium_hero, metric_card, insight_card, section_title
 
 
 setup_page("FinGuard AI", icon="🏦")
