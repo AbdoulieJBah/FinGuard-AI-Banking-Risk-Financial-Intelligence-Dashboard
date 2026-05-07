@@ -15,10 +15,11 @@ from ai_insights import generate_executive_insights
 from llm_copilot import generate_llm_response
 from llm_copilot import generate_llm_response, gemini_debug_status
 from auth import require_login
+from auth import require_role
 
 
 setup_page("AI Executive Copilot", icon="🧠")
-
+require_role(["Admin", "Executive"])
 customers, loans, transactions = load_data()
 
 kpis = calculate_executive_kpis(customers, loans, transactions)
