@@ -2,6 +2,7 @@ import streamlit as st
 
 from auth import require_login
 from global_copilot import render_global_copilot
+from auth import require_role
 from ui_utils import setup_page, premium_hero, metric_card, insight_card, section_title
 from database import (
     init_db,
@@ -13,7 +14,7 @@ from database import (
 
 
 setup_page("Audit & Database Center", icon="🗄️")
-
+require_role(["Admin"])
 init_db()
 
 premium_hero(
