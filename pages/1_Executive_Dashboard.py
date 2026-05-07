@@ -10,9 +10,11 @@ from auth import require_role
 
 
 setup_page("Executive Dashboard", icon="📊")
+
+require_role(["Admin", "Executive"])
 customers, loans, transactions = load_data()
 kpis = calculate_executive_kpis(customers, loans, transactions)
-require_role(["Admin", "Executive"])
+
 premium_hero(
     "📊 Executive Banking Dashboard",
     """
