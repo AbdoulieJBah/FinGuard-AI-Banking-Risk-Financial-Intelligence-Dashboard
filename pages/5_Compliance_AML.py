@@ -5,9 +5,11 @@ from ui_utils import setup_page, premium_hero, metric_card, insight_card, sectio
 from data_utils import load_data
 from global_copilot import render_global_copilot
 from auth import require_login
+from auth import require_role
 
 
 setup_page("Compliance AML", icon="🛡️")
+require_role(["Admin", "Compliance"])
 
 customers, loans, transactions = load_data()
 
