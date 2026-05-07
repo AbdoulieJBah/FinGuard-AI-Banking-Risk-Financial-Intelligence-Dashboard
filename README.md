@@ -2,6 +2,15 @@
 
 ## Enterprise Banking Risk & Financial Intelligence Platform
 
+[![Live App](https://img.shields.io/badge/🚀%20Live%20App-FinGuard%20AI-gold?style=for-the-badge)]([YOUR_STREAMLIT_LINK_HERE](https://finguard-ai-banking-risk-financial-intelligence-dashboard-mxsr.streamlit.app/))
+
+## 🌐 Live Demo
+
+### Streamlit Application
+👉 [Open FinGuard AI]([YOUR_STREAMLIT_LINK_HERE](https://finguard-ai-banking-risk-financial-intelligence-dashboard-mxsr.streamlit.app/))
+
+---
+
 FinGuard AI is a full-stack AI-powered banking intelligence platform designed for:
 
 - Credit Risk Analytics
