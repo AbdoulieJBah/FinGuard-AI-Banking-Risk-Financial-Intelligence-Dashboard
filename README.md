@@ -2,12 +2,12 @@
 
 ## Enterprise Banking Risk & Financial Intelligence Platform
 
-[![Live App](https://img.shields.io/badge/🚀%20Live%20App-FinGuard%20AI-gold?style=for-the-badge)]([YOUR_STREAMLIT_LINK_HERE](https://finguard-ai-banking-risk-financial-intelligence-dashboard-mxsr.streamlit.app/))
+[![Live App](https://img.shields.io/badge/🚀%20Live%20App-FinGuard%20AI-gold?style=for-the-badge)](https://finguard-ai-banking-risk-financial-intelligence-dashboard-mxsr.streamlit.app/)
 
 ## 🌐 Live Demo
 
 ### Streamlit Application
-👉 [Open FinGuard AI]([YOUR_STREAMLIT_LINK_HERE](https://finguard-ai-banking-risk-financial-intelligence-dashboard-mxsr.streamlit.app/))
+👉 [Open FinGuard AI](https://finguard-ai-banking-risk-financial-intelligence-dashboard-mxsr.streamlit.app/)
 
 ---
 
