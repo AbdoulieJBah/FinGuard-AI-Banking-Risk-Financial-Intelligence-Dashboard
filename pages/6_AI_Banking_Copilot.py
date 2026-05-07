@@ -4,10 +4,11 @@ import pandas as pd
 from ui_utils import setup_page, premium_hero, metric_card, insight_card, section_title
 from data_utils import load_data, calculate_executive_kpis
 from auth import require_login
+from auth import require_role
 
 
 setup_page("AI Banking Copilot", icon="🤖")
-
+require_role(["Admin", "Executive", "Risk Analyst", "Compliance"])
 customers, loans, transactions = load_data()
 kpis = calculate_executive_kpis(customers, loans, transactions)
 
