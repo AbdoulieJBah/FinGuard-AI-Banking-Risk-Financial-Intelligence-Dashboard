@@ -24,6 +24,55 @@ The platform combines:
 
 ---
 
+# 📸 Platform Screenshots
+
+## 🏦 Executive Dashboard
+
+![Executive Dashboard](screenshots/executive_dashboard.png)
+
+---
+
+## 💳 Credit Risk Intelligence
+
+![Credit Risk](screenshots/credit_risk.png)
+
+---
+
+## 🚨 Fraud Detection Engine
+
+![Fraud Detection](screenshots/fraud_detection.png)
+
+---
+
+## 🛡️ AML Compliance Monitoring
+
+![AML Monitoring](screenshots/aml_monitoring.png)
+
+---
+
+## ⚡ Real-Time AI Predictions
+
+![Real-Time Predictions](screenshots/realtime_predictions.png)
+
+---
+
+## 🎯 Autonomous Action Engine
+
+![Autonomous Action Engine](screenshots/action_engine.png)
+
+---
+
+## 🤖 Global AI Copilot
+
+![AI Copilot](screenshots/global_copilot.png)
+
+---
+
+## 🗄️ Audit & Database Center
+
+![Audit Database Center](screenshots/audit_database.png)
+---
+
 # 🚀 Platform Features
 
 ## 📊 Executive Dashboard
