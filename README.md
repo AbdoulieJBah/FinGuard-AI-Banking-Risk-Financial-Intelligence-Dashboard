@@ -154,7 +154,7 @@ LLM Layer (Gemini API)
 ├── Executive Copilot
 ├── Global Floating Copilot
 └── Conversational Banking Intelligence
-
+---
 # 🛠️ Technology Stack
 
 ## Frontend
