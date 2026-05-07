@@ -11,9 +11,11 @@ from database import init_db, save_prediction_log, save_audit_log
 from explainability import credit_reason_codes, fraud_reason_codes
 from global_copilot import render_global_copilot
 from auth import require_login
+from auth import require_role
 
 
 setup_page("Real-Time AI Predictions", icon="⚡")
+require_role(["Admin", "Risk Analyst"])
 init_db()
 
 
