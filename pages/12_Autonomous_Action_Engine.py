@@ -8,9 +8,11 @@ from database import init_db, save_executive_action, save_audit_log, load_execut
 from stream_engine import generate_stream_batch, summarize_stream
 from global_copilot import render_global_copilot
 from auth import require_login
+from auth import require_role
 
 
 setup_page("Autonomous Action Engine", icon="🎯")
+require_role(["Admin", "Executive", "Risk Analyst", "Compliance"])
 init_db()
 
 customers, loans, transactions = load_data()
